@@ -4,9 +4,13 @@ O ESP32 é o servidor. Três tipos de cliente falam com ele:
 
 | Cliente | Como acessa | Uso |
 |---|---|---|
-| Navegador | `http://IP_DO_ESP32/` | Central de segurança (página servida pelo próprio ESP32) |
+| Navegador | `http://IP_DO_ESP32/` ou [index.html](index.html) | Central de segurança (página servida pelo próprio ESP32) |
 | Telegram | Bot "Lembretes da Farmácia" | Canal da usuária: alerta, cancelamento com senha, chat e localização |
 | Scripts desta pasta | HTTP na porta 80 | Testes de rede e das rotas da API |
+
+## Página da central
+
+[`index.html`](index.html) é a mesma página que o firmware guarda em `PAGINA_HTML` e entrega na rota `/`. O jeito normal de usar é abrir `http://IP_DO_ESP32/`. Se o arquivo for aberto direto no navegador, ele chama o ESP32 do IP definido na constante `ESP` (hoje `172.20.10.12`), o que funciona porque o servidor responde com `Access-Control-Allow-Origin: *`.
 
 ## Scripts de teste
 

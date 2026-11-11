@@ -134,6 +134,7 @@ curl "http://172.20.10.12/atuador?estado=pulso"
 
 - **Navegador (central de segurança):** abre `http://IP_DO_ESP32/` e mostra visão geral, ocorrência em andamento, áudio, chat, mapa, acionamento da PM (190) e do SAMU (192) simulados, dispositivo em tempo real, histórico, estatísticas e log.
 - **Telegram (usuária):** comandos `/start`, `/status`, `/teste` e `/ajuda`, e os botões "Enviar localização atual", "Estou bem" e "Preciso de ajuda". Durante o alerta, o que ela escreve aparece no chat da central.
+- **Código da central ([src/client/index.html](src/client/index.html)):** cópia da página HTML/CSS/JS que o ESP32 entrega na rota `/`. Aberta direto do arquivo, ela usa o ESP32 do IP definido na constante `ESP` (o servidor libera CORS).
 - **Scripts de teste ([src/client](src/client)):** testam ping, porta 80, rotas, 404, atuador e 100 requisições seguidas, no Windows (PowerShell) e no macOS/Linux (bash).
 
 <p align="center">
@@ -212,7 +213,7 @@ HELP-ME/
 │       └── telegram/            prints do canal da usuária
 └── src/
     ├── esp32/helpme_final_v3/   firmware (Arduino IDE)
-    └── client/                  scripts de teste da central (PowerShell e bash)
+    └── client/                  página da central (index.html) e scripts de teste (PowerShell e bash)
 ```
 
 ## Limitações e próximos passos
