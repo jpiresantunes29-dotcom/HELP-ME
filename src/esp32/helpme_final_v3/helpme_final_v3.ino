@@ -1,3 +1,7 @@
+// HELP ME - firmware do dispositivo de alerta (ESP32 DevKit V1)
+// ESP32 = servidor HTTP na porta 80 (central de segurança) + cliente HTTPS do Telegram (canal da usuária)
+// Arduino IDE: placa "ESP32 Dev Module", partição "No OTA (2MB APP/2MB SPIFFS)", ArduinoJson 7.x, Serial 115200
+
 #include <WiFi.h>
 #include <WebServer.h>
 #include <WiFiClientSecure.h>
@@ -11,6 +15,7 @@
 #include <vector>
 #include <deque>
 
+// Configuração: rede Wi-Fi 2,4 GHz, bot do Telegram e senhas da usuária
 const char* WIFI_SSID        = "NOME_DA_REDE";
 const char* WIFI_SENHA       = "SENHA_DA_REDE";
 const char* TELEGRAM_TOKEN   = "SEU_TOKEN_AQUI";
@@ -18,15 +23,18 @@ const char* CHAT_ID_USUARIA  = "7107756741";
 const char* SENHA_CANCELAR   = "4452";
 const char* SENHA_COACAO     = "2544";
 
+// Identificação do aparelho (dados fictícios)
 const char* DEVICE_ID   = "ESP32_MULHER_01";
 const char* NOME_MULHER = "Mariana Souza";
 
+// Pinos: botão (sensor), motor via transistor (atuador) e microfone I2S (sensor)
 const int PINO_BOTAO = 22;
 const int PINO_MOTOR = 4;
 const int I2S_SCK    = 18;
 const int I2S_WS     = 19;
 const int I2S_SD     = 21;
 
+// Regras de funcionamento (tempos em ms)
 const uint32_t SEGURAR_DISPARO_MS   = 1000;
 const uint32_t JANELA_CANCELAR_MS   = 20000;
 const uint32_t AUDIO_BLOCO_S        = 60;
@@ -37,10 +45,12 @@ const uint32_t MOTOR_MANUAL_MAX_MS  = 10000;
 const uint32_t RECONECTAR_MS        = 10000;
 long limiteSom = 400000;
 
+// Áudio: 8 kHz, 16 bits, mono
 const uint32_t AUDIO_TAXA     = 8000;
 const uint32_t AUDIO_BYTES_S  = AUDIO_TAXA * 2;
 const int      AUDIO_GANHO    = 8;
 
+// Arquivos na flash (LittleFS)
 const char* LOG_FILE  = "/log.txt";
 const char* LOG_OLD   = "/log_old.txt";
 const char* HIST_FILE = "/historico.txt";
@@ -48,6 +58,7 @@ const char* OC_FILE   = "/ocorrencia.txt";
 const char* AUDIO_DIR = "/audio";
 const size_t LOG_MAX  = 24576;
 
+// Página da central de segurança (HTML, CSS e JS), entregue pela rota "/"
 const char PAGINA_HTML[] PROGMEM = R"HELPME(
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -3512,6 +3523,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </html>
 )HELPME";
 
+// Tipos usados pelo motor, pelas filas do Telegram, pela localização e pelo chat
 struct Passo { uint16_t ms; bool ligado; };
 enum TipoEntrada { ENT_TEXTO, ENT_BOTAO, ENT_LOCAL };
 struct Entrada { TipoEntrada tipo; String chat; String texto; double lat; double lon;
@@ -3521,11 +3533,13 @@ struct Saida { String metodo; String json; };
 enum Estado { NORMAL, CONTAGEM, EMERGENCIA };
 struct Mensagem { String de; String texto; String hora; };
 
+// Servidor HTTP escutando na porta 80
 WebServer server(80);
 bool fsOk = false;
 bool horaOk = false;
 SemaphoreHandle_t filaMutex;
 
+// Data e hora atuais (NTP) no formato do log
 String agoraStr() {
   if (horaOk) {
     struct tm t;
@@ -3544,6 +3558,7 @@ String horaCurta() {
   return (horaOk && esp > 0) ? a.substring(esp + 1) : a;
 }
 
+// Grava um evento no log da flash com data, hora e nível (INFO, AVISO ou ERRO)
 void registrar(const char* nivel, const String& msg) {
   String linha = agoraStr() + " [" + nivel + "] " + msg;
   Serial.println(linha);
@@ -3559,6 +3574,7 @@ void registrar(const char* nivel, const String& msg) {
   }
 }
 
+// Registra no log quando a hora é sincronizada por NTP
 void verificarHora() {
   if (horaOk) return;
   if (time(nullptr) > 1700000000) {
@@ -3567,6 +3583,7 @@ void verificarHora() {
   }
 }
 
+// Motor de vibração: padrões de vibração e comando manual pela rede
 Passo padrao[8];
 int nPassos = 0, passoAtual = 0;
 uint32_t passoDesde = 0;
@@ -3579,6 +3596,7 @@ void motorSet(bool on) {
   motorLigado = on;
 }
 
+// Executa um padrão de vibração (liga/desliga alternados, em ms)
 void vibrar(std::initializer_list<uint16_t> tempos) {
   nPassos = 0;
   bool on = true;
@@ -3592,6 +3610,7 @@ void vibrar(std::initializer_list<uint16_t> tempos) {
   if (nPassos > 0) motorSet(padrao[0].ligado);
 }
 
+// Avança o padrão e desliga o comando manual após o tempo máximo
 void atualizarMotor() {
   if (motorManual) {
     if (millis() - motorManualDesde >= MOTOR_MANUAL_MAX_MS) {
@@ -3610,6 +3629,7 @@ void atualizarMotor() {
   }
 }
 
+// Filas entre o laço principal e a tarefa do Telegram (protegidas por mutex)
 std::deque<Entrada> entradas;
 std::deque<Saida> saidas;
 volatile bool telegramOk = false;
@@ -3639,9 +3659,11 @@ bool tirarEntrada(Entrada& e) {
   return tem;
 }
 
+// Teclados do Telegram: botões do pré-alerta e menu fixo da usuária
 const char* TECLADO_PRE  = "{\"inline_keyboard\":[[{\"text\":\"Cancelar alerta\",\"callback_data\":\"cancelar\"},{\"text\":\"Enviar agora\",\"callback_data\":\"enviar\"}]]}";
 const char* TECLADO_MENU = "{\"keyboard\":[[{\"text\":\"📍 Enviar localização atual\",\"request_location\":true}],[{\"text\":\"Estou bem\"},{\"text\":\"Preciso de ajuda\"}]],\"resize_keyboard\":true,\"is_persistent\":true}";
 
+// Coloca uma mensagem para a usuária na fila de saída do Telegram
 void tgEnviar(const String& texto, const char* teclado) {
   JsonDocument d;
   d["chat_id"] = CHAT_ID_USUARIA;
@@ -3653,6 +3675,7 @@ void tgEnviar(const String& texto, const char* teclado) {
 }
 void tgEnviar(const String& texto) { tgEnviar(texto, nullptr); }
 
+// Estado da ocorrência atual
 Estado estado = NORMAL;
 
 String ocorrencia = "";
@@ -3668,6 +3691,7 @@ int tentativasErradas = 0;
 double latUsuaria = 0, lonUsuaria = 0;
 String horaLocalizacao = "";
 
+// Localização da usuária: trajeto ao vivo e validade do compartilhamento
 std::vector<Ponto> trajeto;
 uint32_t locSeq = 0;
 uint32_t locUltimaMs = 0;
@@ -3678,17 +3702,20 @@ float locPrecisao = 0;
 const size_t TRAJETO_MAX = 150;
 const uint32_t LOC_ATRASO_MS = 60000;
 
+// Apaga a localização quando o alerta termina
 void limparLocalizacao() {
   trajeto.clear();
   latUsuaria = lonUsuaria = 0; horaLocalizacao = "";
   locUltimaMs = locAoVivoAte = 0; locAoVivo = locEncerrada = false; locPrecisao = 0;
 }
 
+// Em coação nada é enviado ao celular da usuária
 void tgUsuaria(const String& texto) { if (!coacao) tgEnviar(texto); }
 
 const char* MSG_COMO_AO_VIVO =
   "Para a central acompanhar você em tempo real:\n"
   "📎 (clipe) → Localização → \"Compartilhar localização em tempo real\" → escolha 8 horas.";
+// Chat da ocorrência e contadores do histórico
 std::vector<Mensagem> chat;
 uint32_t contagemDesde = 0, emergenciaDesde = 0;
 uint32_t numOcorrencia = 2400;
@@ -3696,6 +3723,7 @@ uint32_t totalOcorrencias = 0, totalCancelamentos = 0;
 time_t epochInicio = 0;
 String arquivoParaApagar = "";
 
+// Adiciona uma mensagem ao chat da central
 void addChat(const String& de, const String& texto) {
   if (chat.size() >= 40) chat.erase(chat.begin());
   chat.push_back({de, texto, horaCurta()});
@@ -3703,6 +3731,7 @@ void addChat(const String& de, const String& texto) {
 
 String arquivoAudio(const String& oc) { return String(AUDIO_DIR) + "/" + oc + ".wav"; }
 
+// Estado do microfone e da gravação (compartilhado com a tarefa de áudio)
 volatile long volume = 0;
 volatile bool somAlto = false;
 volatile bool gravando = false;
@@ -3712,6 +3741,7 @@ volatile uint32_t bytesLimite = 0;
 String arquivoGravacao = "";
 bool micOk = false;
 
+// Cabeçalho WAV do arquivo de áudio
 void escreverCabecalhoWav(File& f, uint32_t dados) {
   uint8_t h[44];
   uint32_t taxa = AUDIO_TAXA, bps = AUDIO_BYTES_S, riff = dados + 36;
@@ -3723,6 +3753,7 @@ void escreverCabecalhoWav(File& f, uint32_t dados) {
   f.write(h, 44);
 }
 
+// Ajusta o tamanho no cabeçalho WAV ao fim da gravação
 void corrigirCabecalho(const String& caminho) {
   File f = LittleFS.open(caminho, "r+");
   if (!f) return;
@@ -3732,6 +3763,7 @@ void corrigirCabecalho(const String& caminho) {
   f.close();
 }
 
+// Configura o INMP441 no barramento I2S
 void iniciarMicrofone() {
   i2s_config_t cfg;
   memset(&cfg, 0, sizeof(cfg));
@@ -3763,6 +3795,7 @@ void iniciarMicrofone() {
   }
 }
 
+// Tarefa de áudio (núcleo 1): mede o volume e grava blocos de 60 s na flash
 void tarefaAudio(void*) {
   static int32_t amostras[512];
   static int16_t saida[128];
@@ -3830,6 +3863,7 @@ void tarefaAudio(void*) {
   }
 }
 
+// Apaga os áudios mais antigos se faltar espaço na flash
 void liberarEspaco(size_t necessario, const String& manter) {
   for (int volta = 0; volta < 20; volta++) {
     size_t livre = LittleFS.totalBytes() - LittleFS.usedBytes();
@@ -3852,6 +3886,7 @@ void liberarEspaco(size_t necessario, const String& manter) {
   }
 }
 
+// Pede à tarefa de áudio para iniciar ou parar a gravação
 void comecarGravacao() {
   liberarEspaco(AUDIO_BLOCO_S * AUDIO_BYTES_S + 65536, arquivoAudio(ocorrencia));
   arquivoGravacao = arquivoAudio(ocorrencia);
@@ -3863,6 +3898,7 @@ void comecarGravacao() {
 
 void pararGravacao() { if (gravando) pedirParar = true; pedirGravar = false; }
 
+// Número da próxima ocorrência, mantido na flash entre reinícios
 void carregarNumOcorrencia() {
   if (!fsOk || !LittleFS.exists(OC_FILE)) return;
   File f = LittleFS.open(OC_FILE, "r");
@@ -3879,6 +3915,7 @@ void salvarNumOcorrencia() {
   f.close();
 }
 
+// Grava uma linha no histórico: código|nome|início|duração|origem|prioridade|coação|desfecho|resposta|epoch
 void salvarHistorico(uint32_t duracao, const char* desfecho, long resposta) {
   if (!fsOk) return;
   if (epochInicio == 0 && horaOk) epochInicio = time(nullptr) - (millis() - contagemDesde) / 1000;
@@ -3896,12 +3933,14 @@ void salvarHistorico(uint32_t duracao, const char* desfecho, long resposta) {
   f.close();
 }
 
+// Máquina de estados: NORMAL -> CONTAGEM (20 s para cancelar) -> EMERGENCIA
 const char* nomeEstado() {
   if (estado == CONTAGEM) return "contagem";
   if (estado == EMERGENCIA) return "emergencia";
   return "normal";
 }
 
+// Abre o pré-alerta: vibra, inicia a gravação e avisa a usuária no Telegram
 void disparar(const String& origem) {
   if (estado != NORMAL) return;
   estado = CONTAGEM;
@@ -3926,6 +3965,7 @@ void disparar(const String& origem) {
            "Você tem 20 segundos. Se não cancelar, a central será avisada.", TECLADO_PRE);
 }
 
+// Fim dos 20 s sem cancelamento (ou "Enviar agora"): a central recebe a ocorrência
 void confirmarEmergencia(const String& motivo) {
   if (estado != CONTAGEM) return;
   estado = EMERGENCIA;
@@ -3939,6 +3979,7 @@ void confirmarEmergencia(const String& motivo) {
                         "Você pode mandar mensagens aqui.\n\n" + String(MSG_COMO_AO_VIVO), TECLADO_MENU);
 }
 
+// Senha correta no pré-alerta: cancela e apaga o áudio
 void cancelarPelaUsuaria() {
   if (estado != CONTAGEM) return;
   estado = NORMAL;
@@ -3952,6 +3993,7 @@ void cancelarPelaUsuaria() {
   tgEnviar("✅ Alerta cancelado.");
 }
 
+// Senha de coação ou 3 senhas erradas: o celular mostra "cancelado" e a central recebe em silêncio
 void ativarCoacao(const String& motivo) {
   coacao = true;
   prioridade = "maxima";
@@ -3959,6 +4001,7 @@ void ativarCoacao(const String& motivo) {
   registrar("AVISO", "COACAO - " + ocorrencia + " - " + motivo);
 }
 
+// Encerramento pela central: atendimento concluído ou falso alarme
 void encerrarEmergencia(const String& desfecho, bool vaiParaHistorico, bool apagarAudio) {
   if (estado != EMERGENCIA) return;
   uint32_t duracao = (millis() - emergenciaDesde) / 1000;
@@ -3975,6 +4018,7 @@ void encerrarEmergencia(const String& desfecho, bool vaiParaHistorico, bool apag
                                          : "O alerta foi encerrado pela central.");
 }
 
+// Confere o fim da janela de cancelamento e apaga áudios pendentes
 void atualizarEstado() {
   if (estado == CONTAGEM && millis() - contagemDesde >= JANELA_CANCELAR_MS)
     confirmarEmergencia(tentativasErradas > 0 ? "tempo esgotado apos senha incorreta" : "tempo de cancelamento esgotado");
@@ -3984,6 +4028,7 @@ void atualizarEstado() {
   }
 }
 
+// Som alto por 1,5 s durante um alerta sobe a prioridade para máxima
 uint32_t somDesde = 0, ultimoSomAlto = 0;
 void verificarSom() {
   uint32_t agora = millis();
@@ -3996,6 +4041,7 @@ void verificarSom() {
   }
 }
 
+// Botão com debounce: segurar 1 s dispara o alerta
 bool botaoLido = HIGH, botaoEstavel = HIGH;
 uint32_t botaoMudouEm = 0, botaoApertadoDesde = 0;
 bool jaDisparouNesteAperto = false;
@@ -4016,6 +4062,7 @@ void lerBotao() {
   }
 }
 
+// Senhas digitadas pela usuária no Telegram
 bool ehSenha(const String& t) {
   if (t.length() != 4) return false;
   for (unsigned i = 0; i < t.length(); i++) if (!isDigit(t[i])) return false;
@@ -4056,6 +4103,7 @@ void tratarSenha(const String& t) {
   }
 }
 
+// Localização recebida do Telegram (fixa ou ao vivo); só aceita durante um alerta
 void tratarLocalizacao(const Entrada& e) {
   if (estado == NORMAL) {
     if (!e.editada) tgEnviar("Sua localização só é usada durante um alerta, por isso não foi guardada. "
@@ -4092,6 +4140,7 @@ void tratarLocalizacao(const Entrada& e) {
   if (primeira) registrar("INFO", "Primeira localizacao da ocorrencia " + ocorrencia);
 }
 
+// Encerra a localização ao vivo quando o tempo escolhido pela usuária termina
 void verificarLocalizacao() {
   if (locAoVivo && locAoVivoAte && (int32_t)(millis() - locAoVivoAte) > 0) {
     locAoVivo = false; locEncerrada = true;
@@ -4108,6 +4157,7 @@ const char* statusLocalizacao() {
   return "fixa";
 }
 
+// Trata mensagens, botões e localização vindos do Telegram
 void processarEntrada(const Entrada& e) {
   if (e.chat != CHAT_ID_USUARIA) {
     registrar("AVISO", "Telegram: mensagem de um chat desconhecido foi ignorada (" + e.chat + ")");
@@ -4183,6 +4233,7 @@ String chatParaTexto(JsonVariant v) {
   return String(b);
 }
 
+// Tarefa do Telegram (núcleo 0): busca atualizações e envia a fila de saída por HTTPS (porta 443)
 void tarefaTelegram(void*) {
   WiFiClientSecure cliente;
   cliente.setInsecure();
@@ -4249,6 +4300,7 @@ void tarefaTelegram(void*) {
   }
 }
 
+// Wi-Fi: conexão inicial, NTP e reconexão a cada 10 s com registro no log
 bool wifiEstavaConectado = false;
 uint32_t ultimaTentativa = 0;
 
@@ -4290,6 +4342,7 @@ void verificarWiFi() {
   }
 }
 
+// Utilitários de resposta HTTP e JSON
 void cabecalhos() {
   server.sendHeader("Access-Control-Allow-Origin", "*");
   server.sendHeader("Cache-Control", "no-store");
@@ -4311,6 +4364,7 @@ String jsonOk(bool ok) {
 }
 String jb(bool v) { return v ? "true" : "false"; }
 
+// Rotas HTTP (cada uma responde a um GET do cliente)
 void rotaPagina() {
   server.sendHeader("Cache-Control", "no-store");
   server.send_P(200, "text/html; charset=utf-8", PAGINA_HTML);
@@ -4346,6 +4400,7 @@ void rotaPedirLocalizacao() {
   enviarJsonCodigo(ok ? 200 : 409, ok ? jsonOk(true) : String("{\"ok\":false,\"erro\":\"") + (coacao ? "modo silencioso (coacao)" : "sem alerta ativo") + "\"}");
 }
 
+// /status: estado, IP, MAC, rede, sinal, hora, alerta e memória
 void rotaStatus() {
   uint32_t restante = 0;
   if (estado == CONTAGEM) {
@@ -4395,11 +4450,13 @@ void rotaStatus() {
   enviarJson(j);
 }
 
+// /sensor: volume do microfone, limite, som alto e botão
 void rotaSensor() {
   enviarJson("{\"volume\":" + String(volume) + ",\"limite\":" + String(limiteSom) + ",\"som_alto\":" + jb(somAlto) +
              ",\"botao\":" + jb(botaoEstavel == LOW) + ",\"gravando\":" + jb(gravando) + "}");
 }
 
+// /atuador?estado=on|off|pulso: comanda o motor pela rede
 void rotaAtuador() {
   String e = server.arg("estado");
   if (e == "on") {
@@ -4465,6 +4522,7 @@ void rotaChatEnviar() {
   enviarJson("{\"ok\":true}");
 }
 
+// /audio?oc=CODIGO: devolve o WAV gravado
 void rotaAudio() {
   String oc = server.arg("oc");
   if (oc.length() == 0 || oc.indexOf('/') >= 0 || oc.indexOf('.') >= 0) { enviarJsonCodigo(400, "{\"ok\":false}"); return; }
@@ -4498,6 +4556,7 @@ void rotaAudio() {
   f.close();
 }
 
+// /historico: últimas ocorrências lidas do arquivo da flash
 String campo(const String& linha, int indice) {
   int inicio = 0;
   for (int i = 0; i < indice; i++) { inicio = linha.indexOf('|', inicio); if (inicio < 0) return ""; inicio++; }
@@ -4536,6 +4595,7 @@ void rotaHistorico() {
   enviarJson(j);
 }
 
+// /estatisticas: totais por dia e por semana calculados do histórico
 struct Periodo { int total = 0, canc_usuaria = 0, canc_central = 0, nResp = 0; long somaResp = 0; };
 
 time_t epochDaLinha(const String& l) {
@@ -4619,6 +4679,7 @@ void rotaEstatisticas() {
   enviarJson(j);
 }
 
+// /log?ultimas=N: últimas linhas do log da flash
 void rotaLog() {
   cabecalhos();
   if (!fsOk || !LittleFS.exists(LOG_FILE)) { server.send(200, "text/plain; charset=utf-8", ""); return; }
@@ -4650,11 +4711,13 @@ void rotaLimite() {
   enviarJson("{\"ok\":true,\"limite\":" + String(limiteSom) + "}");
 }
 
+// Rota inexistente: 404
 void rotaNaoEncontrada() {
   registrar("AVISO", "Rota nao encontrada: " + server.uri());
   enviarJsonCodigo(404, "{\"ok\":false,\"erro\":\"rota nao encontrada\"}");
 }
 
+// Registra as rotas e abre a porta 80
 void iniciarServidor() {
   server.on("/", HTTP_GET, rotaPagina);
   server.on("/status", HTTP_GET, rotaStatus);
@@ -4680,6 +4743,7 @@ void iniciarServidor() {
   registrar("INFO", "Servidor HTTP escutando na porta 80");
 }
 
+// Inicialização: flash, pinos, Wi-Fi, microfone, tarefas e servidor
 void setup() {
   Serial.begin(115200);
   delay(300);
@@ -4706,6 +4770,7 @@ void setup() {
   xTaskCreatePinnedToCore(tarefaTelegram, "telegram", 12288, NULL, 1, NULL, 0);
 }
 
+// Laço principal: atende clientes HTTP, lê o botão, aplica as regras e cuida do Wi-Fi
 void loop() {
   server.handleClient();
   verificarWiFi();
