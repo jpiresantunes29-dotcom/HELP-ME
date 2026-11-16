@@ -23,6 +23,20 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 2:00 a 2:30 | Motor acionado pela central e acionamento da PM e do SAMU |
 | 2:30 a 2:48 | Encerramento, histórico e estatísticas |
 
+## Etapas do projeto
+
+| Data | Etapa |
+|---|---|
+| 24/09/2026 | Compra das peças |
+| 25/09/2026 | Chegada das peças |
+| 07/10/2026 | Apresentação de status ao professor: prévia da interface web (só um "Hello World" de teste, feita por Letícia) e funcionamento básico do ESP32 com o botão (primeira montagem de teste, feita por Eduardo) |
+| 09/10/2026 | Montagem física do circuito |
+| 15/10/2026 | Testes de cada peça |
+| 16/10/2026 | Testes de rede, Wokwi e ideia do áudio como prova |
+| 04/11/2026 | Versão final: regras de funcionamento, Telegram e nova central |
+| 09/11/2026 | Testes finais e vídeos de demonstração |
+| 10/11/2026 | Case 3D, slides, vídeo geral e relatório final |
+
 ## Sumário
 
 - [Equipe](#equipe)
