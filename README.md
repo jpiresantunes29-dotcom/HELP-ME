@@ -6,6 +6,8 @@ Projeto do TDE da disciplina **Conectividade em Sistemas Ciberfísicos**, curso 
 
 A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-alerta de 20 segundos no Telegram. Se ela não cancelar com a senha, a central de segurança recebe a ocorrência com áudio gravado, conversa e localização. O ESP32 é o **servidor HTTP na porta 80** que entrega a central para qualquer navegador da rede local.
 
+**Formato do protótipo:** nesta fase, o conjunto foi acondicionado em uma caixa preta de bancada, com o botão de acionamento na face superior, solução que favorece a demonstração e o acesso à eletrônica. Em uma etapa futura, quando o projeto evoluir para um produto comercial, a proposta é miniaturizá-lo em um objeto discreto e compacto.
+
 <p align="center">
   <img src="docs/img/prototipo.jpg" width="260" alt="Protótipo do HELP ME">
   <img src="docs/img/central_visao_geral.png" width="520" alt="Central de segurança">
@@ -35,7 +37,9 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 16/10/2026 | Testes de rede, Wokwi e ideia do áudio como prova |
 | 04/11/2026 | Versão final: regras de funcionamento, Telegram e nova central |
 | 09/11/2026 | Testes finais e vídeos de demonstração |
-| 10/11/2026 | Case 3D, slides, vídeo geral e relatório final |
+| 10/11/2026 | Case física, slides, vídeo geral e relatório final |
+| 15/11/2026 | Modelagem 3D da case (João Pedro), para apresentar o modelo na apresentação final |
+| 16/11/2026 | Ajustes finais da apresentação: slides, linha do tempo, vídeo dos slides, ensaio e falas |
 
 ## Sumário
 
@@ -57,8 +61,8 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 40132879 | Eduardo Hashimoto Yonegura | Hardware, protótipo, pesquisa de áudio, testes finais e vídeos |
 | 40126989 | Gabriel André Moro | Pagamento das peças do projeto físico e do botão da case |
 | 40126364 | Guilherme Sakagami Spitzner | Ajuda na montagem física do circuito |
-| 40126944 | João Pedro Pires Antunes | Montagem do circuito, firmware, Telegram, software, testes finais, edição do vídeo, GitHub e relatório final |
-| 40123207 | Letícia Beatriz Silva de Morais | Soldagem, interface web, documentação, case 3D, revisão do relatório e slides |
+| 40126944 | João Pedro Pires Antunes | Montagem do circuito, firmware, Telegram, software, modelagem 3D da case, testes finais, edição do vídeo, GitHub e relatório final |
+| 40123207 | Letícia Beatriz Silva de Morais | Soldagem, interface web, documentação, case física, revisão do relatório e slides |
 
 ## Arquitetura
 
