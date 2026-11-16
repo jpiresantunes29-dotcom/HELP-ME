@@ -31,10 +31,10 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 |---|---|
 | 24/09/2026 | Compra das peças |
 | 25/09/2026 | Chegada das peças |
-| 07/10/2026 | Apresentação de status ao professor: prévia da interface web (só um "Hello World" de teste, feita por Letícia) e funcionamento básico do ESP32 com o botão (primeira montagem de teste, feita por Eduardo) |
+| 07/10/2026 | Apresentação de status ao professor: prévia da interface web (só um "Hello World" de teste, feita por Letícia) e funcionamento básico do ESP32 com o botão (primeira montagem de teste, feita por Eduardo); nessa etapa o protótipo também foi iniciado no Wokwi |
 | 09/10/2026 | Montagem física do circuito |
 | 15/10/2026 | Testes de cada peça |
-| 16/10/2026 | Testes de rede, Wokwi e ideia do áudio como prova |
+| 16/10/2026 | Testes de rede, protótipo no Wokwi aprimorado e atualizado, e ideia do áudio como prova |
 | 04/11/2026 | Versão final: regras de funcionamento, Telegram e nova central |
 | 09/11/2026 | Testes finais e vídeos de demonstração |
 | 10/11/2026 | Case física, slides, vídeo geral e relatório final |
