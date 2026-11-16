@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linha do Tempo HELP ME</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* layout: faixa horizontal colorida com textos alternando abaixo e acima; vira lista vertical no celular */
+:root{
+  color-scheme:dark;
+  --bg:#0b0b0c; --ink:#f5f2f2; --muted:#b9aeae; --line:#6a2a2e;
+  --c1:#e11d2a; --c2:#a8121c; --c3:#e11d2a; --c4:#a8121c; --c5:#e11d2a; --c6:#a8121c; --c7:#e11d2a; --c8:#a8121c; --c9:#e11d2a; --c10:#a8121c; --c11:#e11d2a;
+  --display:'Jost','Helvetica Neue',Arial,sans-serif; --body:'Manrope','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body)}
+main{max-width:1180px;margin:0 auto;padding:22px 16px}
+h1{font-family:var(--display);color:#ff3b47;font-size:clamp(1.3rem,3vw,1.9rem);margin:0 0 2px;text-align:center;letter-spacing:.04em;text-transform:uppercase}
+.sub{margin:0 0 18px;text-align:center;color:var(--muted);font-size:.9rem}
+
+.tl{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:auto 40px auto}
+.seg{font-family:var(--display);letter-spacing:.04em;grid-row:2;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;font-variant-numeric:tabular-nums;background:var(--c)}
+.tx{padding:0 6px;border-left:1.5px solid var(--line);font-size:.8rem;line-height:1.4}
+.tx b{font-family:var(--display);letter-spacing:.02em;display:block;color:#fff;font-size:.9rem;margin-bottom:2px}
+.tx span{color:var(--muted)}
+.up{grid-row:1;align-self:end;padding-bottom:10px}
+.dn{grid-row:3;align-self:start;padding-top:10px}
+.row{display:contents}
+
+@media (max-width:860px){
+  .tl{display:block}
+  .row{display:grid;grid-template-columns:62px 1fr;gap:10px;align-items:center;margin:0 0 7px}
+  .seg{height:46px;border-radius:8px;font-size:.9rem;grid-column:1!important;grid-row:1!important}
+  .tx{border:none;padding:0;font-size:.82rem;line-height:1.3;grid-column:2!important;grid-row:1!important;align-self:center}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Linha do tempo HELP ME</h1>
+  <p class="sub">De 24/09 a 16/11/2026</p>
+  <div class="tl" id="tl"></div>
+</main>
+<script>
+/* dados: [data, título, detalhe] */
+const E=[
+ ["24/09","Compra das peças","A equipe comprou as peças para montar o dispositivo."],
+ ["25/09","Chegada das peças","As peças chegaram e ficaram prontas para uso."],
+ ["07/10","Apresentação de status","Mostramos ao professor uma prévia: uma página web de teste (só um \"Hello World\") e o ESP32 funcionando com o botão."],
+ ["09/10","Montagem física","Montamos e soldamos o circuito com o ESP32, o botão, o microfone e o motor de vibração."],
+ ["15/10","Testes das peças","Testamos cada peça sozinha (botão, motor, microfone, Wi-Fi, servidor e registro de eventos) para garantir que todas funcionavam."],
+ ["16/10","Testes de rede","Testamos a rede e o servidor, atualizamos a simulação no Wokwi, fizemos o documento de pinagem e definimos gravar áudio como prova."],
+ ["04/11","Versão final","Melhoramos as regras de funcionamento, corrigimos erros, configuramos o Telegram e criamos a versão final do código, com a nova central."],
+ ["09/11","Testes finais","Fizemos os testes finais de rede, central, Telegram e motor, e gravamos os vídeos de demonstração."],
+ ["10/11","Case e relatório","A case física (caixa preta com o botão) ficou pronta, o vídeo geral foi editado e o relatório final foi escrito."],
+ ["15/11","Modelagem 3D","Modelamos a case em 3D para mostrar o modelo na apresentação final."],
+ ["16/11","Ensaio e ajustes","Ensaiamos a apresentação, ajustamos a fala de cada um, fizemos os testes finais e gravamos o vídeo de contextualização, que será colocado nos slides."]
+];
+const tl=document.getElementById('tl');
+E.forEach((e,i)=>{
+  const row=document.createElement('div');row.className='row';
+  const pos=i%2===0?'dn':'up';
+  row.innerHTML=`<div class="seg" style="--c:var(--c${i+1});grid-column:${i<10?i+1:'11 / 13'}">${e[0]}</div>
+  <div class="tx ${pos}" style="grid-column:${i<10?(i+1)+' / span 2':'11 / 13'}"><b>${e[1]}</b><span>${e[2]}</span></div>`;
+  tl.appendChild(row);
+});
+</script>
+</body>
+</html>

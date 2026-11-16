@@ -41,6 +41,8 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 15/11/2026 | Modelagem 3D da case (João Pedro), para apresentar o modelo na apresentação final |
 | 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (será editado e colocado nos slides). Todos participaram, exceto Guilherme |
 
+Linha do tempo interativa: [docs/linha-do-tempo/index.html](docs/linha-do-tempo/index.html) (baixe o arquivo e abra no navegador).
+
 ## Sumário
 
 - [Equipe](#equipe)
