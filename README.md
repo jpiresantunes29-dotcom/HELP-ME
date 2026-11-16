@@ -38,10 +38,12 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 04/11/2026 | Versão final: etapa principal em que a ideia inicial foi atualizada, corrigida e aprimorada (regras de funcionamento, Telegram e nova central) |
 | 09/11/2026 | Testes finais e vídeos de demonstração |
 | 10/11/2026 | Case física, slides, vídeo geral e relatório final |
-| 15/11/2026 | Modelagem 3D da case (João Pedro), para apresentar o modelo na apresentação final |
+| 15/11/2026 | Modelagem 3D da case (João Pedro), com vídeo e modelo interativo em [docs/modelagem-3d](docs/modelagem-3d), para apresentar na apresentação final |
 | 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (será editado e colocado nos slides). Todos participaram, exceto Guilherme |
 
 Linha do tempo interativa: [docs/linha-do-tempo/index.html](docs/linha-do-tempo/index.html) (baixe o arquivo e abra no navegador).
+
+<p align="center"><img src="docs/linha-do-tempo/linha_do_tempo_computador.png" width="760" alt="Linha do tempo do projeto"></p>
 
 ## Sumário
 
@@ -100,6 +102,31 @@ No ESP32, o trabalho é dividido em três tarefas do FreeRTOS: o laço principal
 </p>
 
 A pinagem completa do ESP32 está no Apêndice A do [relatório](docs/Relatorio_HELP_ME_ABNT.pdf).
+
+## Case e modelagem 3D
+
+A Letícia construiu a case física: uma caixa preta de bancada, com o botão de acionamento na face superior. Em 15/11/2026, o João Pedro fez a modelagem 3D dessa case, que mostra a caixa fechada, aberta, desmontada e montada, com a protoboard, o ESP32 e a fiação por dentro.
+
+<p align="center">
+  <img src="docs/modelagem-3d/case_fisica_vista_superior.jpg" width="230" alt="Case física, vista superior">
+  <img src="docs/modelagem-3d/modelo_caixa_fechada.png" width="360" alt="Modelo 3D, caixa fechada">
+</p>
+<p align="center">
+  <img src="docs/modelagem-3d/modelo_desmontado_por_dentro.png" width="360" alt="Modelo 3D, vista por dentro">
+  <img src="docs/modelagem-3d/modelo_montado_vista_lateral.png" width="360" alt="Modelo 3D, vista lateral">
+</p>
+
+| Item | Detalhe |
+|---|---|
+| Dimensões do modelo | 115 × 150 × 80 mm (largura × profundidade × altura) |
+| Material | MDF preto, com tampa removível presa por parafusos |
+| Peças modeladas | Botão vermelho no topo, microfone, parafusos, protoboard com ESP32 e fios |
+| Controles | Caixa fechada, Caixa aberta, Desmontar, Montar |
+| Tecnologia | Página HTML com a biblioteca [three.js](https://threejs.org/) |
+| Vídeo | [video_modelagem_3d_case.mp4](docs/modelagem-3d/video_modelagem_3d_case.mp4) (56 s) |
+| Modelo interativo | [caixa_botao.html](docs/modelagem-3d/caixa_botao.html), junto com `three-d-stage.js` (abrir no navegador, com internet) |
+
+Para ver o modelo, baixe a pasta [docs/modelagem-3d](docs/modelagem-3d) e abra o `caixa_botao.html` no navegador.
 
 ## Regras de funcionamento
 
@@ -227,6 +254,8 @@ HELP-ME/
 │   ├── Relatorio_HELP_ME_ABNT.docx
 │   ├── HELP_ME_Funcoes_e_Fluxo_de_Testes.pdf
 │   ├── img/                     arquitetura, ligações, estados, pinagem, protótipo, central e quadros do vídeo
+│   ├── modelagem-3d/            modelo 3D da case (HTML), vídeo, prints e foto da case física
+│   ├── linha-do-tempo/          página da linha do tempo e prints (computador e celular)
 │   └── evidencias/
 │       ├── primeira_rodada/     testes de 16/10/2026
 │       ├── versao_final/        testes de 09/11/2026
