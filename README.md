@@ -39,7 +39,7 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 09/11/2026 | Testes finais e vídeos de demonstração |
 | 10/11/2026 | Case física, slides, vídeo geral e relatório final |
 | 15/11/2026 | Modelagem 3D da case (João Pedro), para apresentar o modelo na apresentação final |
-| 16/11/2026 | Ajustes finais da apresentação: slides, linha do tempo, vídeo dos slides, ensaio e falas |
+| 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (será editado e colocado nos slides). Todos participaram, exceto Guilherme |
 
 ## Sumário
 
