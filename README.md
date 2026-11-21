@@ -17,7 +17,7 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 
 **[Assistir ao vídeo de contextualização (58 s)](https://drive.google.com/file/d/1uBNcnztY9wLcF3GwKnJ3Ux2KRlkfrE1R/view?usp=drivesdk)**
 
-Vídeo gravado pela equipe em 16/11/2026 para abrir a apresentação final, com o cenário da violência doméstica no Brasil e a proposta do HELP ME. O arquivo também está em [docs/video-contexto](docs/video-contexto/video_contextualizacao.mp4).
+Vídeo de contextualização gravado pela equipe em 16/11/2026 para abrir a apresentação final (slide "Vídeo contexto"). O arquivo também está em [docs/video-contexto](docs/video-contexto/video_contextualizacao.mp4).
 
 ## Vídeo de demonstração
 
@@ -45,7 +45,7 @@ Vídeo gravado pela equipe em 16/11/2026 para abrir a apresentação final, com 
 | 09/11/2026 | Testes finais e vídeos de demonstração |
 | 10/11/2026 | Case física, slides, vídeo geral e relatório final |
 | 15/11/2026 | Modelagem 3D da case (João Pedro), com vídeo e modelo interativo em [docs/modelagem-3d](docs/modelagem-3d), para apresentar na apresentação final |
-| 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (será editado e colocado nos slides). Todos participaram, exceto Guilherme |
+| 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (editado depois e colocado nos slides). Todos participaram, exceto Guilherme |
 | 17/11/2026 a 18/11/2026 | Roteiros de fala de cada integrante e ajuste do slide de Funcionamento, que passou a mostrar a senha de coação, as 3 senhas erradas e os motivos da prioridade máxima |
 | 21/11/2026 | PDF final da apresentação e consolidação de toda a documentação do projeto neste repositório, em [docs/apresentacao](docs/apresentacao) |
 
