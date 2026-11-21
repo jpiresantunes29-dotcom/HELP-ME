@@ -40,13 +40,26 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
 | 10/11/2026 | Case física, slides, vídeo geral e relatório final |
 | 15/11/2026 | Modelagem 3D da case (João Pedro), com vídeo e modelo interativo em [docs/modelagem-3d](docs/modelagem-3d), para apresentar na apresentação final |
 | 16/11/2026 | Ensaio e ajustes finais: ensaio da apresentação, fala de cada integrante, testes finais e gravação do vídeo de contextualização (será editado e colocado nos slides). Todos participaram, exceto Guilherme |
+| 17/11/2026 a 18/11/2026 | Roteiros de fala de cada integrante e ajuste do slide de Funcionamento, que passou a mostrar a senha de coação, as 3 senhas erradas e os motivos da prioridade máxima |
+| 21/11/2026 | PDF final da apresentação e consolidação de toda a documentação do projeto neste repositório, em [docs/apresentacao](docs/apresentacao) |
 
 Linha do tempo interativa: [docs/linha-do-tempo/index.html](docs/linha-do-tempo/index.html) (baixe o arquivo e abra no navegador).
 
 <p align="center"><img src="docs/linha-do-tempo/linha_do_tempo_computador.png" width="760" alt="Linha do tempo do projeto"></p>
 
+## Apresentação final
+
+Os slides da apresentação final (22 slides, feitos no Canva), as miniaturas e os roteiros de fala estão em [docs/apresentacao](docs/apresentacao).
+
+<p align="center"><img src="docs/apresentacao/visao_geral_slides.jpg" width="760" alt="Visão geral dos slides da apresentação final"></p>
+
+- [Slides em PDF](docs/apresentacao/HELP_ME_Apresentacao_Final.pdf)
+- [Fala do João Pedro: regras de funcionamento](docs/apresentacao/roteiro_fala_joao_pedro.md)
+- [Fala do Eduardo: código e fase de testes, com a demonstração em dupla](docs/apresentacao/roteiro_fala_eduardo.md)
+
 ## Sumário
 
+- [Apresentação final](#apresentação-final)
 - [Equipe](#equipe)
 - [Arquitetura](#arquitetura)
 - [Hardware e pinagem](#hardware-e-pinagem)
@@ -253,6 +266,7 @@ HELP-ME/
 │   ├── Relatorio_HELP_ME_ABNT.pdf
 │   ├── Relatorio_HELP_ME_ABNT.docx
 │   ├── HELP_ME_Funcoes_e_Fluxo_de_Testes.pdf
+│   ├── apresentacao/            slides finais em PDF, miniaturas e roteiros de fala
 │   ├── img/                     arquitetura, ligações, estados, pinagem, protótipo, central e quadros do vídeo
 │   ├── modelagem-3d/            modelo 3D da case (HTML), vídeo, prints e foto da case física
 │   ├── linha-do-tempo/          página da linha do tempo e prints (computador e celular)
@@ -281,4 +295,6 @@ Próximos passos: bateria, login na central, verificação do certificado TLS e 
 - [Relatório técnico (ABNT), PDF](docs/Relatorio_HELP_ME_ABNT.pdf)
 - [Relatório técnico (ABNT), DOCX](docs/Relatorio_HELP_ME_ABNT.docx)
 - [Funções e fluxo de testes](docs/HELP_ME_Funcoes_e_Fluxo_de_Testes.pdf)
+- [Slides da apresentação final (PDF)](docs/apresentacao/HELP_ME_Apresentacao_Final.pdf)
+- [Linha do tempo](docs/linha-do-tempo/index.html) e [modelagem 3D da case](docs/modelagem-3d)
 - [Vídeo de demonstração](https://drive.google.com/file/d/1CQPIhX4oUAhRQfv2Jqt-ol8FbV0izJc4/view?usp=drivesdk)
