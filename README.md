@@ -13,6 +13,12 @@ A usuária segura um botão por 1 segundo. O dispositivo vibra e abre um pré-al
   <img src="docs/img/central_visao_geral.png" width="520" alt="Central de segurança">
 </p>
 
+## Vídeo de contextualização
+
+**[Assistir ao vídeo de contextualização (58 s)](https://drive.google.com/file/d/1uBNcnztY9wLcF3GwKnJ3Ux2KRlkfrE1R/view?usp=drivesdk)**
+
+Vídeo gravado pela equipe em 16/11/2026 para abrir a apresentação final, com o cenário da violência doméstica no Brasil e a proposta do HELP ME. O arquivo também está em [docs/video-contexto](docs/video-contexto/video_contextualizacao.mp4).
+
 ## Vídeo de demonstração
 
 **[Assistir ao vídeo completo (2 min 54 s)](https://drive.google.com/file/d/1CQPIhX4oUAhRQfv2Jqt-ol8FbV0izJc4/view?usp=drivesdk)**
@@ -269,6 +275,7 @@ HELP-ME/
 │   ├── apresentacao/            slides finais em PDF, miniaturas e roteiros de fala
 │   ├── img/                     arquitetura, ligações, estados, pinagem, protótipo, central e quadros do vídeo
 │   ├── modelagem-3d/            modelo 3D da case (HTML), vídeo, prints e foto da case física
+│   ├── video-contexto/          vídeo de contextualização da apresentação final
 │   ├── linha-do-tempo/          página da linha do tempo e prints (computador e celular)
 │   └── evidencias/
 │       ├── primeira_rodada/     testes de 16/10/2026
@@ -297,4 +304,5 @@ Próximos passos: bateria, login na central, verificação do certificado TLS e 
 - [Funções e fluxo de testes](docs/HELP_ME_Funcoes_e_Fluxo_de_Testes.pdf)
 - [Slides da apresentação final (PDF)](docs/apresentacao/HELP_ME_Apresentacao_Final.pdf)
 - [Linha do tempo](docs/linha-do-tempo/index.html) e [modelagem 3D da case](docs/modelagem-3d)
+- [Vídeo de contextualização (58 s)](https://drive.google.com/file/d/1uBNcnztY9wLcF3GwKnJ3Ux2KRlkfrE1R/view?usp=drivesdk)
 - [Vídeo de demonstração](https://drive.google.com/file/d/1CQPIhX4oUAhRQfv2Jqt-ol8FbV0izJc4/view?usp=drivesdk)
